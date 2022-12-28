@@ -1,0 +1,33 @@
+server:
+  port: 8083
+
+spring:
+  datasource:
+    driver-class-name: org.sqlite.JDBC
+    url: jdbc:sqlite:gamerWeb.db
+  flyway:
+    enabled: true
+    encoding: UTF-8
+    locations: classpath:db/migration/
+    sql-migration-prefix: gamerWeb
+    sql-migration-suffixes: .sql
+    sql-migration-separator: _
+    validate-on-migrate: true
+    baseline-on-migrate: true
+    validate-migration-naming: true
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+  mvc:
+    static-path-pattern: /picture/**
+  web:
+    resources:
+      static-locations: file:picture
+logging:
+  file:
+    name: ./logs/info.log
+  logback:
+    rollingpolicy:
+      max-history: 30
+      max-file-size: 10MB
+picture.path: ./picture
+
