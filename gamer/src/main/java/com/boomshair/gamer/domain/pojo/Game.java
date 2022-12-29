@@ -34,7 +34,7 @@ public class Game {
     private Integer playedTime;
 
     @Column(name = "stars", nullable = false)
-    private Integer stars;
+    private Double stars;
 
     @Column(name = "year", nullable = false)
     private Integer year;

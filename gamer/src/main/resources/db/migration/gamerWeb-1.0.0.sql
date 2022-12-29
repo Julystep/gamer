@@ -7,7 +7,7 @@ create table if not exists game(
     platform integer not null, /* 平台 */
     year integer not null, /* 年份 */
     played_time varchar not null, /* 游戏时长 */
-    stars integer not null, /* 个人评分 */
+    stars double not null, /* 个人评分 */
     create_time datetime /* 创建时间 */
 );
 drop index if exists tb_deploy_id_uindex;
