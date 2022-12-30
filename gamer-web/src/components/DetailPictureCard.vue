@@ -6,12 +6,12 @@
         <h1>
           <el-row>
             <el-col class="icon" :span="3" :offset="6">
-              <h1 @click="print()">
+              <h1 @click="reverseShow(data.id)">
                 <el-icon><Edit /></el-icon>
               </h1>
             </el-col>
             <el-col class="icon" :span="3" :offset="6">
-              <h1 @click="print1()">
+              <h1 @click="deleteById(data.id)">
                 <el-icon><Delete /></el-icon>
               </h1>
             </el-col>
@@ -20,35 +20,45 @@
       </div>
     </div>
     <div style="padding: 14px; height: 58px">
-      <span>异度神剑3</span>
+      <span>{{ data.chineseName }}</span>
       <div class="bottom">
-        <el-tag class="ml-2" type="danger">Switch</el-tag>
-        <el-tag class="ml-2" type="warning">{{ time }}小时</el-tag>
+        <el-tag class="ml-2" type="danger">{{ data.platform }}</el-tag>
+        <el-tag class="ml-2" type="warning">{{ data.playedTime }}小时</el-tag>
       </div>
     </div>
   </el-card>
+  <GamerInfo ref="game"/>
 </template>
 <script>
 import { Delete, Edit } from "@element-plus/icons";
-
+import GamerInfo from './modalbox/GamerInfo.vue'
 export default {
   name: "DetailPictureCard",
   components: {
     Delete,
     Edit,
+    GamerInfo
   },
   props: {
     url: String,
     time: String,
     platform: String,
     gameName: String,
+    data: Object
   },
   methods: {
-    print() {
-      console.log('oh click')
+    reverseShow(id) {
+      this.$refs.game.showDialogWithDetail(id)
     },
-    print1() {
-      console.log('oh click1111111')
+    submit(form) {
+      this.$axios.post('/update', form).then(res => {
+        console.log(res)
+      })
+    },
+    deleteById(id) {
+      this.$axios.post("/delete/" + id).then(res => {
+        console.log(res)
+      })
     }
   }
 };
@@ -104,5 +114,6 @@ export default {
 }
 .img_div:hover .mask {
   opacity: 1;
+  cursor: pointer;
 }
 </style>

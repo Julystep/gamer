@@ -4,6 +4,7 @@ create table if not exists game(
     game_name varchar not null, /* 游戏名称 */
     chinese_name varchar not null , /* 中文名称 */
     picture_path varchar not null, /* 图片 */
+    disk_path varchar not null, /* 图片 */
     platform integer not null, /* 平台 */
     year integer not null, /* 年份 */
     played_time varchar not null, /* 游戏时长 */

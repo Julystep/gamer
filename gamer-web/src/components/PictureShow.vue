@@ -4,7 +4,7 @@
         <h2> 2022 </h2>
         <el-row class="picture_row" :gutter="20" v-for="i in 2" :key="i">
           <el-col v-for="(o, index) in 4" :key="o" :span="5" :offset="index == 0 ? 2 : 0" style="padding:10px">
-            <el-image style="width: 100%; height: 100%; border-radius: 25px;" :src="url" :fit="none"/>
+            <el-image style="width: 100%; height: 100%; border-radius: 25px;" :src="url" :fit="cover"/>
           </el-col>
         </el-row>
       </el-carousel-item>

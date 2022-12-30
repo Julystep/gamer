@@ -5,6 +5,7 @@ import Picture from './components/PictureShow.vue'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import { createRouter, createMemoryHistory } from 'vue-router'
+import axios from './axiosInstance.js'
 
 const routes = [
     {path: '/detail', component: Detail},
@@ -17,6 +18,7 @@ const router = createRouter({
 })
 
 const main = createApp(App)
+main.config.globalProperties.$axios = axios
 main.use(router)
 main.use(ElementPlus)
 main.mount('#app')

@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 /**
  * 接口定义
  * @since v1.0.0
@@ -29,21 +32,25 @@ public class GameController {
     }
 
     @PostMapping("/update")
-    public ResultBody updateGame(Game game) {
-        gameService.updateGame(game);
+    public ResultBody updateGame(@RequestParam("file") MultipartFile file, Game game) {
+        gameService.updateGame(file, game);
         return ResultBody.success("更新成功");
     }
 
-    @PostMapping("/query/{year}")
-    public ResultBody findGame(@RequestBody Game game, @PathVariable String year) {
-        gameService.updateGame(game);
-        return ResultBody.success("更新成功");
+    @GetMapping(value = {"/query/{year}", "/query"})
+    public ResultBody findGame(@PathVariable(value = "year", required = false) Integer year) {
+        return gameService.findGame(year);
     }
 
-    @PostMapping("/delete")
-    public ResultBody deleteGame(@RequestBody Game game) {
-        gameService.updateGame(game);
-        return ResultBody.success("更新成功");
+    @PostMapping("/delete/{id}")
+    public ResultBody deleteGame(@PathVariable(value = "id") Integer id) {
+        gameService.deleteGame(id);
+        return ResultBody.success("删除成功");
+    }
+
+    @GetMapping("/detail/{id}")
+    public ResultBody gameDetail(@PathVariable(value = "id") Integer id) {
+        return gameService.gameDetail(id);
     }
 
 

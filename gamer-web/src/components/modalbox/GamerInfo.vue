@@ -27,7 +27,7 @@
       <el-form-item label="封面">
         <el-upload
           action="#"
-          :file-list="form.file"
+          :file-list="form.fileList"
           :multiple="false"
           :auto-upload="false"
           :before-upload="beforeUpload"
@@ -65,14 +65,30 @@ export default {
         playedTime: "",
         stars: 0,
         year: "",
+        fileList: [],
       },
       subDialogTableVisible: false,
-      fileList: [],
-      param: "",
+      param: new FormData(),
+      data: "",
     };
   },
   methods: {
     showDialog() {
+      this.subDialogTableVisible = true;
+    },
+    showDialogWithDetail(id) {
+      this.$axios('/detail/' + id).then(res => {
+        if (res.status === 200 && res.data.code === 0) {
+          this.form = res.data.data    
+          let picturePath = new Object() 
+          picturePath.name = this.form.gameName
+          picturePath.url = this.form.picturePath
+          this.form.fileList = []
+          this.form.fileList.push(picturePath)   
+        } else {
+          console.log('error')
+        }
+      })
       this.subDialogTableVisible = true;
     },
     onSubmit() {
@@ -83,12 +99,16 @@ export default {
       this.param.append("playedTime", this.form.playedTime);
       this.param.append("stars", this.form.stars);
       this.param.append("year", this.form.year);
+      if (typeof(this.form.id) !== 'undefined') {
+        this.param.append("id", this.form.id)
+      }
+      this.form = {}
       this.$parent.submit(this.param);
     },
     beforeUpload(file) {
       this.param = new FormData()
-      this.fileList.push(file);
-      let images = [...this.fileList];
+      this.form.fileList.push(file);
+      let images = [...this.form.fileList];
       images.forEach((img) => {
         this.param
         this.param.append('file', img); // 把单个图片重命名，存储起来（给后台）

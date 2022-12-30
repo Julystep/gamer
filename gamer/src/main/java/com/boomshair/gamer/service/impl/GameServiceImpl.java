@@ -2,6 +2,7 @@ package com.boomshair.gamer.service.impl;
 
 import com.boomshair.gamer.dao.GameRepository;
 import com.boomshair.gamer.domain.pojo.Game;
+import com.boomshair.gamer.domain.res.ResultBody;
 import com.boomshair.gamer.exception.GameException;
 import com.boomshair.gamer.service.GameService;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +14,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 游戏服务实现
@@ -27,7 +31,13 @@ public class GameServiceImpl implements GameService {
     @Value("${picture.path}")
     private String picturePath;
 
+    @Value("${static.path}")
+    private String staticPath;
+
     GameRepository gameRepository;
+
+    private static final String UPDATE = "update";
+    private static final String INSERT = "insert";
 
     @Autowired
     public void setGameRepository(GameRepository gameRepository) {
@@ -37,8 +47,30 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public void saveNewGame(MultipartFile file, Game game) {
-        String name = file.getOriginalFilename();
-        String diskPath = MessageFormat.format("{0}/{1}/{2}", picturePath, game.getGameName(),name);
+        saveGame(file, game, INSERT);
+    }
+
+    @Override
+    public void updateGame(MultipartFile file, Game game) {
+        saveGame(file, game, UPDATE);
+    }
+
+    private void saveGame(MultipartFile file, Game game, String operate) {
+        if (Objects.equals(operate, UPDATE)) {
+            Game gameInDb = gameRepository.findGameById(game.getId());
+            File currentFile = new File(gameInDb.getDiskPath());
+            if (!currentFile.delete()) log.warn("历史文件{}未成功删除", gameInDb.getDiskPath());
+        }
+        String absoluteDiskFilePath = saveDiskFile(game, file);
+        String httpPath = MessageFormat.format("{0}/{1}/{2}", staticPath, game.getGameName(), file.getOriginalFilename());
+        game.setCreateTime(new Date());
+        game.setPicturePath(httpPath);
+        game.setDiskPath(absoluteDiskFilePath);
+        gameRepository.saveAndFlush(game);
+    }
+
+    private String saveDiskFile(Game game, MultipartFile file) {
+        String diskPath = MessageFormat.format("{0}/{1}/{2}", picturePath, game.getGameName(), file.getOriginalFilename());
         File diskFile = new File(diskPath);
         if (diskFile.exists() && !diskFile.delete()) throw new GameException("文件已存在");
         File parentFile = diskFile.getParentFile();
@@ -62,23 +94,30 @@ public class GameServiceImpl implements GameService {
             log.error("文件内容写入文件系统失败", e);
             throw new GameException("将文件存入硬盘失败");
         }
-        game.setCreateTime(new Date());
-        game.setPicturePath(diskFile.getAbsolutePath());
-        gameRepository.saveAndFlush(game);
+        return diskFile.getAbsolutePath();
     }
 
     @Override
-    public void updateGame(Game game) {
-
+    public void deleteGame(Integer id) {
+        Game gameInDb = gameRepository.findGameById(id);
+        if (Objects.isNull(gameInDb)) throw new GameException("记录已被删除");
+        gameRepository.deleteById(id);
     }
 
     @Override
-    public void deleteGame(Game game) {
-
+    public ResultBody findGame(Integer year) {
+        List<Game> result;
+        if (Objects.isNull(year)) {
+            result = gameRepository.findAll();
+        } else {
+            result = gameRepository.findGamesByYear(year);
+        }
+        return ResultBody.successWithData(result);
     }
 
     @Override
-    public void findGame(Game game) {
-
+    public ResultBody gameDetail(Integer id) {
+        Game game = gameRepository.findGameById(id);
+        return ResultBody.successWithData(game);
     }
 }

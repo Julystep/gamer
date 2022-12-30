@@ -17,7 +17,6 @@
 <script>
 import { Plus } from "@element-plus/icons";
 import GamerInfo from './modalbox/GamerInfo.vue'
-import axios from 'axios'
 export default {
   name: "DetailPictureAddCard",
   data() {
@@ -34,8 +33,7 @@ export default {
       this.$refs.game.showDialog()
     },
     submit(form) {
-      console.log(form)
-      axios.post('http://127.0.0.1:8083/save', form).then(data => {
+      this.$axios.post('/save', form).then(data => {
         console.log(data)
       })
     },

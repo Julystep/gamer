@@ -42,6 +42,9 @@ public class Game {
     @Column(name = "picture_path", nullable = false)
     private String picturePath;
 
+    @Column(name = "disk_path", nullable = false)
+    private String diskPath;
+
     @Column(name = "create_time", nullable = false)
     private Date createTime;
 

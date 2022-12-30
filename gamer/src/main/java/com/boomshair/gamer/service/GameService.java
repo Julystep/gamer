@@ -1,6 +1,7 @@
 package com.boomshair.gamer.service;
 
 import com.boomshair.gamer.domain.pojo.Game;
+import com.boomshair.gamer.domain.res.ResultBody;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -12,10 +13,12 @@ public interface GameService {
 
     void saveNewGame(MultipartFile file, Game game);
 
-    void updateGame(Game game);
+    void updateGame(MultipartFile file, Game game);
 
-    void deleteGame(Game game);
+    void deleteGame(Integer id);
 
-    void findGame(Game game);
+    ResultBody findGame(Integer year);
+
+    ResultBody gameDetail(Integer id);
 
 }

@@ -30,4 +30,5 @@ logging:
       max-history: 30
       max-file-size: 10MB
 picture.path: ./picture
+static.path: http://127.0.0.1:8083/picture
 
