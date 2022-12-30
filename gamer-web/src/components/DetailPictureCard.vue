@@ -27,40 +27,77 @@
       </div>
     </div>
   </el-card>
-  <GamerInfo ref="game"/>
+  <GamerInfo ref="game" />
 </template>
 <script>
 import { Delete, Edit } from "@element-plus/icons";
-import GamerInfo from './modalbox/GamerInfo.vue'
+import GamerInfo from "./modalbox/GamerInfo.vue";
 export default {
   name: "DetailPictureCard",
   components: {
     Delete,
     Edit,
-    GamerInfo
+    GamerInfo,
   },
+  inject: ['reload'],
   props: {
     url: String,
     time: String,
     platform: String,
     gameName: String,
-    data: Object
+    data: Object,
   },
   methods: {
     reverseShow(id) {
-      this.$refs.game.showDialogWithDetail(id)
+      this.$refs.game.showDialogWithDetail(id);
     },
     submit(form) {
-      this.$axios.post('/update', form).then(res => {
-        console.log(res)
-      })
+      this.$axios.post("/update", form).then((res) => {
+        if (res.status === 200 && res.data.code === 0) {
+          this.$message({
+            message: "更新成功",
+            type: "success",
+          });
+          this.reload();
+        } else {
+          this.$message({
+            message: "更新失败",
+            type: "error",
+          });
+        }
+      });
     },
     deleteById(id) {
-      this.$axios.post("/delete/" + id).then(res => {
-        console.log(res)
+      this.$confirm("确定删除？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
-    }
-  }
+        .then(() => {
+          this.$axios.post("/delete/" + id).then((res) => {
+            console.log(res);
+            if (res.status === 200 && res.data.code === 0) {
+              this.$message({
+                message: "删除成功",
+                type: "success",
+              });
+              this.reload()
+            } else {
+              this.$message({
+                message: "删除失败",
+                type: "error",
+              });
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+    },
+  },
 };
 </script>
 <style scoped>

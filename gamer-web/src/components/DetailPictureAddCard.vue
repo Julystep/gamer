@@ -12,32 +12,44 @@
       </div>
     </div>
   </el-card>
-  <GamerInfo ref="game"/>
+  <GamerInfo ref="game" />
 </template>
 <script>
 import { Plus } from "@element-plus/icons";
-import GamerInfo from './modalbox/GamerInfo.vue'
+import GamerInfo from "./modalbox/GamerInfo.vue";
 export default {
   name: "DetailPictureAddCard",
   data() {
     return {
-      dialogTableVisible: false
-    }
+      dialogTableVisible: false,
+    };
   },
   components: {
     Plus,
-    GamerInfo
+    GamerInfo,
   },
+  inject: ['reload'],
   methods: {
     reverseShow() {
-      this.$refs.game.showDialog()
+      this.$refs.game.showDialog();
     },
     submit(form) {
-      this.$axios.post('/save', form).then(data => {
-        console.log(data)
-      })
+      this.$axios.post("/save", form).then((res) => {
+        if (res.status === 200 && res.data.code === 0) {
+          this.$message({
+            message: "新增成功",
+            type: "success",
+          });
+        } else {
+          this.$message({
+            message: "新增失败",
+            type: "error",
+          });
+        }
+        this.reload()
+      });
     },
-  }
+  },
 };
 </script>
 <style scoped>
@@ -77,7 +89,7 @@ export default {
   text-align: center;
   font-size: 25px;
 }
-.img_div:hover{
-    cursor: pointer;
+.img_div:hover {
+  cursor: pointer;
 }
 </style>

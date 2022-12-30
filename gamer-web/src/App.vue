@@ -17,7 +17,7 @@
               </el-menu>
             </el-header>
             <el-main>
-              <router-view></router-view>
+              <router-view v-if="isRouterAlive"></router-view>
             </el-main>
         </el-container>
     </div>
@@ -26,6 +26,25 @@
 <script>
 export default {
   name: 'App',
+  provide() {
+		return {
+			reload: this.reload
+		}
+	},
+  data(){
+		return{
+			isRouterAlive:true
+		}
+	},
+	methods: {
+		reload() {
+			this.isRouterAlive=false
+      console.log("执行了")
+			this.$nextTick(function(){
+				this.isRouterAlive=true
+			})
+		}
+	}
 }
 </script>
 

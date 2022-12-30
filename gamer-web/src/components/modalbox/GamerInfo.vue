@@ -77,6 +77,7 @@ export default {
       this.subDialogTableVisible = true;
     },
     showDialogWithDetail(id) {
+      this.form = {}
       this.$axios('/detail/' + id).then(res => {
         if (res.status === 200 && res.data.code === 0) {
           this.form = res.data.data    
