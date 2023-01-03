@@ -1,51 +1,75 @@
 <template>
   <div class="common-layout">
-        <el-container>
-            <el-header>
-              <el-menu :default-active="activeIndex" mode="horizontal" :ellipsis="false">
-                <el-menu-item index="0">
-                  <h1><router-link style="text-decoration: none" to="/">GAMER-WEB</router-link></h1>
-                </el-menu-item>
-                <div class="flex-grow" />
-                <el-sub-menu index="1">
-                  <template #title><h1> 年度游戏预览 </h1></template>
-                  <el-menu-item index="2-1"><router-link style="text-decoration: none" to="/detail">2020</router-link></el-menu-item>
-                  <el-menu-item index="2-2"><router-link style="text-decoration: none" to="/detail">2021</router-link></el-menu-item>
-                  <el-menu-item index="2-3"><router-link style="text-decoration: none" to="/detail">2022</router-link></el-menu-item>
-                </el-sub-menu>
-                <div class="flex-grow" />
-              </el-menu>
-            </el-header>
-            <el-main>
-              <router-view v-if="isRouterAlive"></router-view>
-            </el-main>
-        </el-container>
-    </div>
+    <el-container>
+      <el-header>
+        <el-menu
+          mode="horizontal"
+          :ellipsis="false"
+        >
+          <el-menu-item index="1">
+            <h1>
+              <router-link style="text-decoration: none" to="/"
+                >GAMER-WEB</router-link
+              >
+            </h1>
+          </el-menu-item>
+          <div class="flex-grow" />
+          <el-sub-menu index="2">
+            <template #title><h1>年度游戏预览</h1></template>
+            <el-menu-item v-for="(year, index) in years" :key="year" :index="1-index">
+              <router-link style="text-decoration: none" :to="{path: '/detail', query: {year: year}}">{{ year }}</router-link>
+            </el-menu-item>
+          </el-sub-menu>
+          <div class="flex-grow" />
+        </el-menu>
+      </el-header>
+      <el-main>
+        <router-view :key="key" v-if="isRouterAlive"></router-view>
+      </el-main>
+    </el-container>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'App',
+  name: "App",
   provide() {
-		return {
-			reload: this.reload
-		}
-	},
-  data(){
-		return{
-			isRouterAlive:true
-		}
-	},
-	methods: {
-		reload() {
-			this.isRouterAlive=false
-      console.log("执行了")
-			this.$nextTick(function(){
-				this.isRouterAlive=true
-			})
-		}
-	}
-}
+    return {
+      reload: this.reload,
+    };
+  },
+  computed: {
+    key() {
+      return this.$route.name ? this.$route.name + new Date() : this.$route + new Date()
+    }
+  },
+  data() {
+    return {
+      isRouterAlive: true,
+      years: [],
+    };
+  },
+  methods: {
+    reload() {
+      this.isRouterAlive = false;
+      this.$nextTick(function () {
+        this.isRouterAlive = true;
+      });
+    },
+  },
+  mounted() {
+    this.$axios.get("/query/years").then((res) => {
+      if (res.status === 200 && res.data.code === 0) {
+        this.years = res.data.data;
+      } else {
+        this.$message({
+          message: "查询失败",
+          type: "error",
+        });
+      }
+    });
+  },
+};
 </script>
 
 <style scoped>

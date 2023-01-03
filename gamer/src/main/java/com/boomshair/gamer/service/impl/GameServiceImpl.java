@@ -120,4 +120,9 @@ public class GameServiceImpl implements GameService {
         Game game = gameRepository.findGameById(id);
         return ResultBody.successWithData(game);
     }
+
+    @Override
+    public ResultBody queryYears() {
+        return ResultBody.successWithData(gameRepository.findAllYear());
+    }
 }

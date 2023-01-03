@@ -8,7 +8,7 @@
       style="padding: 10px"
     >
       <DetailPictureCard
-        v-if="index < data.length-1"
+        v-if="index < data.length - 1"
         :data="o"
         :url="o.picturePath"
         :gameName="o.chineseName"
@@ -43,10 +43,17 @@ export default {
   },
   methods: {},
   mounted() {
-    this.$axios.get("/query/2022").then((res) => {
-      this.data = res.data.data
-      this.data.push(1)
-      console.log(this.data)
+    console.log(this.$route)
+    this.$axios.get("/query/" + this.$route.query.year).then((res) => {
+      if (res.status === 200 && res.data.code === 0) {
+        this.data = res.data.data;
+        this.data.push(1);
+      } else {
+        this.$message({
+          message: "查询失败",
+          type: "error",
+        });
+      }
     });
   },
 };

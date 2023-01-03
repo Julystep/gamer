@@ -53,6 +53,11 @@ public class GameController {
         return gameService.gameDetail(id);
     }
 
+    @GetMapping("/query/years")
+    public ResultBody queryYears() {
+        return gameService.queryYears();
+    }
+
 
 
 }

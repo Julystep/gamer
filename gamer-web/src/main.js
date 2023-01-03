@@ -8,7 +8,7 @@ import { createRouter, createMemoryHistory } from 'vue-router'
 import axios from './axiosInstance.js'
 
 const routes = [
-    {path: '/detail', component: Detail},
+    {path: '/detail', component: Detail, name: 'Detail'},
     {path: '/', component: Picture}
 ]
 

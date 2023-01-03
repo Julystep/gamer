@@ -21,4 +21,5 @@ public interface GameService {
 
     ResultBody gameDetail(Integer id);
 
+    ResultBody queryYears();
 }
