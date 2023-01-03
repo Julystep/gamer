@@ -56,6 +56,14 @@ public class GameServiceImpl implements GameService {
     }
 
     private void saveGame(MultipartFile file, Game game, String operate) {
+        if (Objects.equals(operate, UPDATE) && Objects.isNull(file)) {
+            saveWithoutFile(game);
+        } else {
+            saveWithFile(file, game, operate);
+        }
+    }
+
+    private void saveWithFile(MultipartFile file, Game game, String operate) {
         if (Objects.equals(operate, UPDATE)) {
             Game gameInDb = gameRepository.findGameById(game.getId());
             File currentFile = new File(gameInDb.getDiskPath());
@@ -66,6 +74,14 @@ public class GameServiceImpl implements GameService {
         game.setCreateTime(new Date());
         game.setPicturePath(httpPath);
         game.setDiskPath(absoluteDiskFilePath);
+        gameRepository.saveAndFlush(game);
+    }
+
+    private void saveWithoutFile(Game game) {
+        Game gameInDb = gameRepository.findGameById(game.getId());
+        game.setCreateTime(gameInDb.getCreateTime());
+        game.setPicturePath(gameInDb.getPicturePath());
+        game.setDiskPath(gameInDb.getDiskPath());
         gameRepository.saveAndFlush(game);
     }
 

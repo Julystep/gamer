@@ -32,7 +32,7 @@ public class GameController {
     }
 
     @PostMapping("/update")
-    public ResultBody updateGame(@RequestParam("file") MultipartFile file, Game game) {
+    public ResultBody updateGame(@RequestParam(value = "file", required = false) MultipartFile file, Game game) {
         gameService.updateGame(file, game);
         return ResultBody.success("更新成功");
     }

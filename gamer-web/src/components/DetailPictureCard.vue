@@ -1,7 +1,7 @@
 <template>
   <el-card :body-style="{ padding: '0px' }">
     <div class="img_div">
-      <el-image class="image" width="100%;" :src="url" :fit="fit" />
+      <el-image class="image" width="100%;" :src="url" fit="cover" />
       <div class="mask">
         <h1>
           <el-row>
@@ -20,9 +20,12 @@
       </div>
     </div>
     <div style="padding: 14px; height: 58px">
-      <span>{{ data.chineseName }}</span>
+      <div class="mid">
+        <span>{{ data.chineseName }}</span>
+        <el-tag class="ml-2" :type="calPlatform(data.platform)">{{ data.platform }}</el-tag>
+      </div>
       <div class="bottom">
-        <el-tag class="ml-2" type="danger">{{ data.platform }}</el-tag>
+        <el-rate :model-value="data.stars"  allow-half disabled="true" :max="10"/>
         <el-tag class="ml-2" type="warning">{{ data.playedTime }}小时</el-tag>
       </div>
     </div>
@@ -97,6 +100,21 @@ export default {
           });
         });
     },
+    calPlatform(platform) {
+      console.log(platform)
+      if (platform === 'Switch') {
+        return 'danger'
+      }
+      if (platform === 'PlayStation') {
+        return 'primary'
+      }
+      if (platform === 'Xbox') {
+        return 'success'
+      }
+      if (platform === 'PC') {
+        return 'info'
+      }
+    }
   },
 };
 </script>
@@ -109,6 +127,12 @@ export default {
 .time {
   font-size: 12px;
   color: #999;
+}
+
+.mid {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .bottom {

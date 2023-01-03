@@ -1,34 +1,57 @@
 <template>
-    <el-carousel :interval="50000" arrow="always">
-      <el-carousel-item v-for="item in 4" :key="item" width="100%" height="100%">
-        <h2> 2022 </h2>
-        <el-row class="picture_row" :gutter="20" v-for="i in 2" :key="i">
-          <el-col v-for="(o, index) in 4" :key="o" :span="5" :offset="index == 0 ? 2 : 0" style="padding:10px">
-            <el-image style="width: 100%; height: 100%; border-radius: 25px;" :src="url" :fit="cover"/>
-          </el-col>
-        </el-row>
-      </el-carousel-item>
-    </el-carousel>
+  <el-carousel :interval="50000" arrow="always">
+    <el-carousel-item v-for="item in years" :key="item" width="100%" height="100%">
+      <h2>{{ item }}</h2>
+      <el-row class="picture_row" :gutter="20" :key="i">
+        <el-col
+          v-for="(o, index) in map.get(item)"
+          :key="o"
+          :span="5"
+          :offset="index == 0 ? 2 : 0"
+          style="padding: 10px"
+        >
+          <el-image
+            style="width: 100%; height: 100%; border-radius: 25px"
+            :src="o.picturePath"
+            fit="cover"
+            v-if="index < 8"
+          />
+        </el-col>
+      </el-row>
+    </el-carousel-item>
+  </el-carousel>
 </template>
 <script>
 export default {
-    name: 'PictureShow',
-    data() {
-      return {
-        'url': 'http://127.0.0.1:8083/picture/Xenoblade_Chronicles/Xenoblade_Chronicles3.jpg'
+  name: "PictureShow",
+  data() {
+    return {
+      map: new Map(),
+      years: []
+    };
+  },
+  mounted() {
+    this.$axios.get("/query").then((res) => {
+      if (res.status === 200 && res.data.code === 0) {
+        let data = res.data.data;
+        let m = new Map()
+        data.forEach(item => {
+          if (!m.has(item.year)) {
+            m.set(item.year, new Array());
+            this.years.push(item.year)
+          }
+          m.get(item.year).push(item)
+          this.map = m;
+        })
+      } else {
+        this.$message({
+          message: "查询失败",
+          type: "error",
+        });
       }
-    },
-    computed: {
-      computeOffset(index) {
-        if (index == 0) return 1;
-        else return 2;
-      }
-    },
-    created() {
-      // 获取后端数据，拿到近三年的游戏预览
-
-    }
-}
+    });
+  },
+};
 </script>
 <style>
 .el-carousel__item h3 {
@@ -49,26 +72,26 @@ export default {
 
 h2 {
   text-align: center;
-  color: white;
+  color: black;
   font-style: oblique;
 }
 
 .el-carousel__item:nth-child(2n) {
-  background-color: black;
+  background-color: white;
 }
 
 .el-carousel__item:nth-child(2n + 1) {
-  background-color: black;
+  background-color: white;
 }
 .el-row.picture_row > .el-col {
   height: 400px;
-  background-color: black;
+  background-color: white;
 }
 
 .el-row.picture_row {
   margin-top: 20px;
 }
-.el-image__inner{
+.el-image__inner {
   height: 100%;
 }
 </style>
