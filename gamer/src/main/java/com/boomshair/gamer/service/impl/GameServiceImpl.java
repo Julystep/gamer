@@ -126,7 +126,7 @@ public class GameServiceImpl implements GameService {
         if (Objects.isNull(year)) {
             result = gameRepository.findAll();
         } else {
-            result = gameRepository.findGamesByYear(year);
+            result = gameRepository.findGamesByYearOrderByYearDesc(year);
         }
         return ResultBody.successWithData(result);
     }

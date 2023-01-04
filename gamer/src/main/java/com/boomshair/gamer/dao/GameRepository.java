@@ -15,9 +15,12 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
 
     Game findGameById(Integer id);
 
-    List<Game> findGamesByYear(Integer year);
+    List<Game> findGamesByYearOrderByYearDesc(Integer year);
 
-    @Query(value = "select distinct year from game", nativeQuery = true)
+    @Query(value = "select * from game order by year desc", nativeQuery = true)
+    List<Game> findAllOrderByYearDesc();
+
+    @Query(value = "select distinct year from game order by year desc", nativeQuery = true)
     List<Integer> findAllYear();
 
 }
