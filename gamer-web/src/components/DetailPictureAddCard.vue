@@ -28,26 +28,38 @@ export default {
     Plus,
     GamerInfo,
   },
-  inject: ['reload'],
+
   methods: {
     reverseShow() {
       this.$refs.game.showDialog();
     },
     submit(form) {
-      this.$axios.post("/save", form).then((res) => {
-        if (res.status === 200 && res.data.code === 0) {
-          this.$message({
-            message: "新增成功",
-            type: "success",
-          });
-        } else {
-          this.$message({
-            message: "新增失败",
-            type: "error",
-          });
-        }
-        this.reload()
-      });
+      this.$axios
+        .post("/save", form, {
+          headers: { token: this.$token.getToken() },
+        })
+        .then((res) => {
+          if (res.status === 200 && res.data.code === 0) {
+            this.$message({
+              message: "新增成功",
+              type: "success",
+            });
+          } else {
+            if (res.data.code === 302) {
+              this.$message({
+                message: "权限不足",
+                type: "error",
+              });
+              this.$token.setToken("");
+            } else {
+              this.$message({
+                message: "新增失败",
+                type: "error",
+              });
+            }
+          }
+          this.reload();
+        });
     },
   },
 };

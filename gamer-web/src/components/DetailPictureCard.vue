@@ -2,7 +2,7 @@
   <el-card :body-style="{ padding: '0px' }">
     <div class="img_div">
       <el-image class="image" width="100%;" :src="url" fit="cover" />
-      <div class="mask">
+      <div class="mask" v-show="this.$token.getToken() !== ''">
         <h1>
           <el-row>
             <el-col class="icon" :span="3" :offset="6">
@@ -22,10 +22,17 @@
     <div style="padding: 14px; height: 58px">
       <div class="mid">
         <span>{{ data.chineseName }}</span>
-        <el-tag class="ml-2" :type="calPlatform(data.platform)">{{ data.platform }}</el-tag>
+        <el-tag class="ml-2" :type="calPlatform(data.platform)">{{
+          data.platform
+        }}</el-tag>
       </div>
       <div class="bottom">
-        <el-rate :model-value="data.stars"  allow-half disabled="true" :max="10"/>
+        <el-rate
+          :model-value="data.stars"
+          allow-half
+          disabled="true"
+          :max="10"
+        />
         <el-tag class="ml-2" type="warning">{{ data.playedTime }}小时</el-tag>
       </div>
     </div>
@@ -42,7 +49,7 @@ export default {
     Edit,
     GamerInfo,
   },
-  inject: ['reload'],
+  inject: ["reload"],
   props: {
     url: String,
     time: String,
@@ -55,20 +62,32 @@ export default {
       this.$refs.game.showDialogWithDetail(id);
     },
     submit(form) {
-      this.$axios.post("/update", form).then((res) => {
-        if (res.status === 200 && res.data.code === 0) {
-          this.$message({
-            message: "更新成功",
-            type: "success",
-          });
-          this.reload();
-        } else {
-          this.$message({
-            message: "更新失败",
-            type: "error",
-          });
-        }
-      });
+      this.$axios
+        .post("/update", form, {
+          headers: { token: this.$token.getToken() },
+        })
+        .then((res) => {
+          if (res.status === 200 && res.data.code === 0) {
+            this.$message({
+              message: "更新成功",
+              type: "success",
+            });
+            this.reload();
+          } else {
+            if (res.data.code === 302) {
+              this.$message({
+                message: "权限不足",
+                type: "error",
+              });
+              this.$token.setToken("");
+            } else {
+              this.$message({
+                message: "更新失败",
+                type: "error",
+              });
+            }
+          }
+        });
     },
     deleteById(id) {
       this.$confirm("确定删除？", "提示", {
@@ -84,7 +103,7 @@ export default {
                 message: "删除成功",
                 type: "success",
               });
-              this.reload()
+              this.reload();
             } else {
               this.$message({
                 message: "删除失败",
@@ -101,20 +120,20 @@ export default {
         });
     },
     calPlatform(platform) {
-      console.log(platform)
-      if (platform === 'Switch') {
-        return 'danger'
+      console.log(platform);
+      if (platform === "Switch") {
+        return "danger";
       }
-      if (platform === 'PlayStation') {
-        return 'primary'
+      if (platform === "PlayStation") {
+        return "primary";
       }
-      if (platform === 'Xbox') {
-        return 'success'
+      if (platform === "Xbox") {
+        return "success";
       }
-      if (platform === 'PC') {
-        return 'info'
+      if (platform === "PC") {
+        return "info";
       }
-    }
+    },
   },
 };
 </script>

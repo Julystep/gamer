@@ -15,7 +15,7 @@
         :platform="o.platform"
         :time="o.playedTime"
       />
-      <DetailPictureAddCard v-else />
+      <DetailPictureAddCard v-if="this.$token.getToken() !== '' && index >= data.length - 1"/>
     </el-col>
   </el-row>
 </template>
@@ -40,8 +40,10 @@ export default {
       if (index == 0) return 1;
       else return 2;
     },
+    show(index) {
+      return this.$token.getToken() !== '' && index >= 2
+    }
   },
-  methods: {},
   mounted() {
     console.log(this.$route)
     this.$axios.get("/query/" + this.$route.query.year).then((res) => {

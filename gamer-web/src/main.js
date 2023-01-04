@@ -6,6 +6,7 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import axios from './axiosInstance.js'
+import token from './token.js'
 
 const routes = [
     {path: '/detail', component: Detail, name: 'Detail'},
@@ -17,8 +18,10 @@ const router = createRouter({
     routes
 })
 
+
 const main = createApp(App)
 main.config.globalProperties.$axios = axios
+main.config.globalProperties.$token = token
 main.use(router)
 main.use(ElementPlus)
 main.mount('#app')

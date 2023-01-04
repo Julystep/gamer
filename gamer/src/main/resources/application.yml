@@ -29,6 +29,25 @@ logging:
     rollingpolicy:
       max-history: 30
       max-file-size: 10MB
+sa-token:
+  # token 名称 (同时也是cookie名称)
+  token-name: token
+  # token 有效期，30分钟
+  timeout: 1800
+  is-concurrent: true
+  # token 临时有效期 (指定时间内无操作就视为token过期) 单位: 秒
+  activity-timeout: 1800
+  # 在多人登录同一账号时，是否共用一个token (为true时所有登录共用一个token, 为false时每次登录新建一个token)
+  is-share: false
+  # token风格
+  token-style: uuid
+  is-print: false
+
 picture.path: ./picture
 static.path: http://127.0.0.1:8083/picture
+
+default_username: admin
+default_password: 123456
+
+
 
