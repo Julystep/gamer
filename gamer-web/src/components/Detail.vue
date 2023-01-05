@@ -14,8 +14,12 @@
         :gameName="o.chineseName"
         :platform="o.platform"
         :time="o.playedTime"
+        :yearId="yearId"
       />
-      <DetailPictureAddCard v-if="this.$token.getToken() !== '' && index >= data.length - 1"/>
+      <DetailPictureAddCard
+        v-if="this.$token.getToken() !== '' && index >= data.length - 1"
+        :yearId="yearId"
+      />
     </el-col>
   </el-row>
 </template>
@@ -30,9 +34,8 @@ export default {
   },
   data() {
     return {
-      url: "http://127.0.0.1:8083/picture/Xenoblade_Chronicles/Xenoblade_Chronicles3.jpg",
-      time: 100,
       data: [],
+      yearId: this.$route.query.id,
     };
   },
   computed: {
@@ -41,22 +44,39 @@ export default {
       else return 2;
     },
     show(index) {
-      return this.$token.getToken() !== '' && index >= 2
-    }
+      return this.$token.getToken() !== "" && index >= 2;
+    },
+  },
+  methods: {
+    queryData() {
+      this.$axios
+        .post(
+          "/isLogin",
+          {},
+          {
+            headers: { token: this.$token.getToken() },
+          }
+        )
+        .then((res) => {
+          if (res.status !== 200 || res.data.code !== 0) {
+            this.$token.setToken("");
+          } 
+        });
+      this.$axios.get("/query/" + this.$route.query.id).then((res) => {
+        if (res.status === 200 && res.data.code === 0) {
+          this.data = res.data.data;
+          this.data.push(1);
+        } else {
+          this.$message({
+            message: "查询失败",
+            type: "error",
+          });
+        }
+      });
+    },
   },
   mounted() {
-    console.log(this.$route)
-    this.$axios.get("/query/" + this.$route.query.year).then((res) => {
-      if (res.status === 200 && res.data.code === 0) {
-        this.data = res.data.data;
-        this.data.push(1);
-      } else {
-        this.$message({
-          message: "查询失败",
-          type: "error",
-        });
-      }
-    });
+    this.queryData();
   },
 };
 </script>

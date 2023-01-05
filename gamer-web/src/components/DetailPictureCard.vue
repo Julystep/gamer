@@ -37,7 +37,7 @@
       </div>
     </div>
   </el-card>
-  <GamerInfo ref="game" />
+  <GamerInfo ref="game" :yearId="yearId" />
 </template>
 <script>
 import { Delete, Edit } from "@element-plus/icons";
@@ -56,6 +56,7 @@ export default {
     platform: String,
     gameName: String,
     data: Object,
+    yearId: Number
   },
   methods: {
     reverseShow(id) {
@@ -72,7 +73,6 @@ export default {
               message: "更新成功",
               type: "success",
             });
-            this.reload();
           } else {
             if (res.data.code === 302) {
               this.$message({
@@ -88,6 +88,7 @@ export default {
             }
           }
         });
+      this.reload();
     },
     deleteById(id) {
       this.$confirm("确定删除？", "提示", {
@@ -96,21 +97,42 @@ export default {
         type: "warning",
       })
         .then(() => {
-          this.$axios.post("/delete/" + id).then((res) => {
-            console.log(res);
-            if (res.status === 200 && res.data.code === 0) {
-              this.$message({
-                message: "删除成功",
-                type: "success",
-              });
+          this.$axios
+            .post(
+              "/delete/" + id,
+              {},
+              {
+                headers: { token: this.$token.getToken() },
+              }
+            )
+            .then((res) => {
+              console.log(res);
+              if (res.status === 200 && res.data.code === 0) {
+                this.$message({
+                  message: "删除成功",
+                  type: "success",
+                });
+              
+              } else {
+                if (res.data.code === 302) {
+                  this.$message({
+                    message: "权限不足",
+                    type: "error",
+                  });
+                  this.$token.setToken("");
+                } else {
+                  this.$message({
+                    message: "更新失败",
+                    type: "error",
+                  });
+                }
+             
+              }
+            });
+            new Promise((resolve) => setTimeout(resolve, 500)).then(() => {
               this.reload();
-            } else {
-              this.$message({
-                message: "删除失败",
-                type: "error",
-              });
-            }
-          });
+            })
+            
         })
         .catch(() => {
           this.$message({

@@ -1,7 +1,9 @@
 package com.boomshair.gamer.service.impl;
 
 import com.boomshair.gamer.dao.GameRepository;
+import com.boomshair.gamer.dao.YearRepository;
 import com.boomshair.gamer.domain.pojo.Game;
+import com.boomshair.gamer.domain.pojo.Year;
 import com.boomshair.gamer.domain.res.ResultBody;
 import com.boomshair.gamer.exception.GameException;
 import com.boomshair.gamer.service.GameService;
@@ -14,10 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * 游戏服务实现
@@ -35,6 +34,7 @@ public class GameServiceImpl implements GameService {
     private String staticPath;
 
     GameRepository gameRepository;
+    YearRepository yearRepository;
 
     private static final String UPDATE = "update";
     private static final String INSERT = "insert";
@@ -42,6 +42,11 @@ public class GameServiceImpl implements GameService {
     @Autowired
     public void setGameRepository(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
+    }
+
+    @Autowired
+    public void setYearRepository(YearRepository yearRepository) {
+        this.yearRepository = yearRepository;
     }
 
 
@@ -121,12 +126,12 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public ResultBody findGame(Integer year) {
+    public ResultBody findGame(Integer yearId) {
         List<Game> result;
-        if (Objects.isNull(year)) {
+        if (Objects.isNull(yearId)) {
             result = gameRepository.findAll();
         } else {
-            result = gameRepository.findGamesByYearOrderByYearDesc(year);
+            result = gameRepository.findGamesByYearOrderByYearDesc(yearId);
         }
         return ResultBody.successWithData(result);
     }
@@ -139,6 +144,6 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public ResultBody queryYears() {
-        return ResultBody.successWithData(gameRepository.findAllYear());
+        return ResultBody.successWithData(yearRepository.findAllByOrderByYearDesc());
     }
 }

@@ -17,7 +17,7 @@ public interface GameService {
 
     void deleteGame(Integer id);
 
-    ResultBody findGame(Integer year);
+    ResultBody findGame(Integer yearId);
 
     ResultBody gameDetail(Integer id);
 

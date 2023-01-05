@@ -12,7 +12,7 @@
       </div>
     </div>
   </el-card>
-  <GamerInfo ref="game" />
+  <GamerInfo ref="game" :yearId="yearId" />
 </template>
 <script>
 import { Plus } from "@element-plus/icons";
@@ -24,6 +24,10 @@ export default {
       dialogTableVisible: false,
     };
   },
+  props: {
+    yearId: Number
+  },
+  inject: ["reload"],
   components: {
     Plus,
     GamerInfo,
@@ -44,6 +48,7 @@ export default {
               message: "新增成功",
               type: "success",
             });
+            this.reload();
           } else {
             if (res.data.code === 302) {
               this.$message({
@@ -57,8 +62,8 @@ export default {
                 type: "error",
               });
             }
+            this.reload();
           }
-          this.reload();
         });
     },
   },

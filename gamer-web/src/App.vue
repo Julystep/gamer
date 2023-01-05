@@ -20,8 +20,8 @@
             >
               <router-link
                 style="text-decoration: none"
-                :to="{ path: '/detail', query: { year: year } }"
-                >{{ year }}</router-link
+                :to="{ path: '/detail', query: { year: year.year, id: year.id} }"
+                >{{ year.year }}</router-link
               >
             </el-menu-item>
           </el-sub-menu>

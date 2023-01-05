@@ -6,10 +6,10 @@
       width="100%"
       height="100%"
     >
-      <h2>{{ item }}</h2>
+      <h2>{{ item.year }}</h2>
       <el-row class="picture_row" :gutter="20" :key="i">
         <el-col
-          v-for="(o, index) in map.get(item)"
+          v-for="(o, index) in map.get(item.year)"
           :key="o"
           :span="5"
           :offset="index == 0 ? 2 : 0"
@@ -26,6 +26,20 @@
     </el-carousel-item>
   </el-carousel>
   <div class="split"></div>
+  <el-row :gutter="20" style="margin-bottom: 60px">
+    <el-col :span="6" :offset="12"><h1 style="margin-top: 0px">年度平台统计</h1></el-col>
+    <el-col :span="6" >
+      <slot>年份：</slot>
+      <el-select v-model="year" class="m-2" placeholder="选择年份" size="small" width="100%" @change="changeData">
+        <el-option
+          v-for="item in years"
+          :key="item.year"
+          :label="item.year"
+          :value="item.year"
+        />
+      </el-select>
+    </el-col>
+  </el-row>
   <el-row style="height: 1200px">
     <el-col :span="12"
       ><div
@@ -56,6 +70,9 @@
       ></div
     ></el-col>
   </el-row>
+  <el-row :gutter="20" style="margin-bottom: 60px">
+    <el-col :span="6" :offset="12"><h1 style="margin-top: 0px">游戏时长汇总</h1></el-col>
+  </el-row>
   <el-row style="height: 600px">
     <el-col :span="24"
       ><div
@@ -73,7 +90,7 @@ export default {
     return {
       map: new Map(),
       years: [],
-      year: 2022,
+      year: 0,
     };
   },
   methods: {
@@ -82,7 +99,7 @@ export default {
       var myChart = this.$echarts.init(chartDom);
       var option;
       let source = [];
-      source.push(["product", "Switch", "PlayStation", "Xbox", "PC"])
+      source.push(["product", "Switch", "PlayStation", "Xbox", "PC"]);
       m.forEach((values, key) => {
         let sourceItem = [];
         sourceItem.push(key);
@@ -109,7 +126,7 @@ export default {
         sourceItem.push(xboxNum);
         sourceItem.push(pcNum);
         source.push(sourceItem);
-      })
+      });
       option = {
         legend: {},
         tooltip: {},
@@ -134,16 +151,17 @@ export default {
       var chartDom = document.getElementById(id);
       var myChart = this.$echarts.init(chartDom);
       var option;
-      let result = []
-      data.forEach(item => {
-        if (item.platform === id) {
-          let ob = {}
-          ob.value = item.playedTime
-          ob.name = item.chineseName
-          result.push(ob)
-        }
-      })
-      console.log(result)
+      let result = [];
+      if (typeof data !== "undefined") {
+        data.forEach((item) => {
+          if (item.platform === id) {
+            let ob = {};
+            ob.value = item.playedTime;
+            ob.name = item.chineseName;
+            result.push(ob);
+          }
+        });
+      }
       option = {
         title: {
           text: id,
@@ -176,16 +194,17 @@ export default {
 
       option && myChart.setOption(option);
     },
-  },
-  mounted() {
-    let m = new Map();
+    changeData() {
+      this.pintPicture()
+    },
+    pintPicture() {
+      let m = new Map();
     this.$axios.get("/query").then((res) => {
       if (res.status === 200 && res.data.code === 0) {
         let data = res.data.data;
         data.forEach((item) => {
           if (!m.has(item.year)) {
             m.set(item.year, new Array());
-            this.years.push(item.year);
           }
           m.get(item.year).push(item);
           this.map = m;
@@ -202,6 +221,22 @@ export default {
         });
       }
     });
+    }
+  },
+  mounted() {
+    this.$axios.get("/query/years").then((res) => {
+      if (res.status === 200 && res.data.code === 0) {
+        this.years = res.data.data;
+        console.log(this.years[0])
+        this.year = this.years[0].year
+      } else {
+        this.$message({
+          message: "查询失败",
+          type: "error",
+        });
+      }
+    });
+    this.pintPicture()
   },
 };
 </script>

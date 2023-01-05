@@ -41,9 +41,9 @@
           ></el-button>
         </el-upload>
       </el-form-item>
-      <el-form-item label="年份" prop="year">
+      <!-- <el-form-item label="年份" prop="year">
         <el-input v-model="form.year" />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
         <el-button type="primary" @click="onSubmit">提交</el-button>
       </el-form-item>
@@ -65,7 +65,7 @@ export default {
         platform: "",
         playedTime: "",
         stars: 0,
-        year: "",
+        // year: "",
         fileList: [],
       },
       subDialogTableVisible: false,
@@ -104,6 +104,9 @@ export default {
       },
     };
   },
+  props: {
+    yearId: Number
+  },
   methods: {
     showDialog() {
       this.subDialogTableVisible = true;
@@ -133,7 +136,7 @@ export default {
       this.param.append("platform", this.form.platform);
       this.param.append("playedTime", this.form.playedTime);
       this.param.append("stars", this.form.stars);
-      this.param.append("year", this.form.year);
+      this.param.append("year", this.yearId);
       if (typeof this.form.id !== "undefined") {
         this.param.append("id", this.form.id);
       }
