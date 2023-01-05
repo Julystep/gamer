@@ -4,8 +4,8 @@
       <div class="mask">
         <el-row>
           <el-col :span="4" :offset="10">
-            <h1 class="h1">
-              <el-icon class="icon"><Plus /></el-icon>
+            <h1 class="icon">
+              <el-icon><Plus /></el-icon>
             </h1>
           </el-col>
         </el-row>
@@ -73,13 +73,6 @@ export default {
   font-size: 12px;
   color: #999;
 }
-.bottom {
-  margin-top: 13px;
-  line-height: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
 .img_div {
   height: 386px;
   display: block;
@@ -97,7 +90,7 @@ export default {
   pointer-events: none;
 }
 .mask .el-row .el-col {
-  margin-top: 40%;
+  margin-top: 136px;
   text-align: center;
   font-size: 25px;
 }
