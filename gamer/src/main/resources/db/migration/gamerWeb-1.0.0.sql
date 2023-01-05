@@ -20,4 +20,6 @@ create unique index tb_game_game_name_uindex on game (game_name);
 create table if not exists year(
     id integer not null      constraint tb_year_pk         primary key autoincrement,
     year Integer not null /* 游戏名称 */
-)
+);
+
+insert into year(id, year) values (1, 2020), (2, 2021), (3, 2022);
