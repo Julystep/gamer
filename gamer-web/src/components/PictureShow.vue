@@ -12,7 +12,7 @@
           v-for="(o, index) in map.get(item.year)"
           :key="o"
           :span="5"
-          :offset="index == 0 ? 2 : 0"
+          :offset="index % 4 == 0 ? 2 : 0"
           style="padding: 10px"
         >
           <el-image

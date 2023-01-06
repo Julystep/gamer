@@ -1,0 +1,1 @@
+insert into year(id, year) values (4, 2022);
