@@ -43,7 +43,7 @@
   <el-row style="height: 1200px">
     <el-col :span="12"
       ><div
-        id="Switch"
+        id="Nintendo"
         class="main_container"
         style="width: 100%; height: 600px"
       ></div
@@ -99,17 +99,17 @@ export default {
       var myChart = this.$echarts.init(chartDom);
       var option;
       let source = [];
-      source.push(["product", "Switch", "PlayStation", "Xbox", "PC"]);
+      source.push(["product", "Nintendo", "PlayStation", "Xbox", "PC"]);
       m.forEach((values, key) => {
         let sourceItem = [];
         sourceItem.push(key);
-        let switchNum = 0;
+        let nintendoNum = 0;
         let playStationNum = 0;
         let xboxNum = 0;
         let pcNum = 0;
         values.forEach((item) => {
-          if (item.platform === "Switch") {
-            switchNum += item.playedTime;
+          if (item.platform === "Nintendo") {
+            nintendoNum += item.playedTime;
           }
           if (item.platform === "PlayStation") {
             playStationNum += item.playedTime;
@@ -121,7 +121,7 @@ export default {
             pcNum += item.playedTime;
           }
         });
-        sourceItem.push(switchNum);
+        sourceItem.push(nintendoNum);
         sourceItem.push(playStationNum);
         sourceItem.push(xboxNum);
         sourceItem.push(pcNum);
@@ -210,7 +210,7 @@ export default {
           this.map = m;
         });
         this.initHistory(m);
-        this.initPlatform("Switch", m.get(this.year));
+        this.initPlatform("Nintendo", m.get(this.year));
         this.initPlatform("PlayStation", m.get(this.year));
         this.initPlatform("Xbox", m.get(this.year));
         this.initPlatform("PC", m.get(this.year));

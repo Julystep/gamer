@@ -13,7 +13,7 @@
       </el-form-item>
       <el-form-item label="游戏平台" prop="platform">
         <el-select v-model="form.platform" placeholder="请选择游戏平台">
-          <el-option label="Switch" value="Switch" />
+          <el-option label="Nintendo" value="Nintendo" />
           <el-option label="PlayStation" value="PlayStation" />
           <el-option label="Xbox" value="Xbox" />
           <el-option label="PC" value="PC" />

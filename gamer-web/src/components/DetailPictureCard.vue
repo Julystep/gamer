@@ -143,7 +143,7 @@ export default {
     },
     calPlatform(platform) {
       console.log(platform);
-      if (platform === "Switch") {
+      if (platform === "Nintendo") {
         return "danger";
       }
       if (platform === "PlayStation") {
