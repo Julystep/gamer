@@ -113,19 +113,23 @@ export default {
     },
     showDialogWithDetail(id) {
       this.form = {};
-      this.$axios("/detail/" + id).then((res) => {
-        if (res.status === 200 && res.data.code === 0) {
+      let result = this.$gameRequest.queryGameDetail(id)
+      result.then(res => {
+        if (res === -1) {
+          this.$gameMessageBox.errorMessageBox(this, "查询失败")
+        } else {
           this.form = res.data.data;
           let picturePath = new Object();
           picturePath.name = this.form.gameName;
           picturePath.url = this.form.picturePath;
           this.form.fileList = [];
           this.form.fileList.push(picturePath);
-        } else {
-          console.log("error");
         }
-      });
-      this.subDialogTableVisible = true;
+        this.subDialogTableVisible = true;
+      }).catch(error => {
+        console.log(error)
+
+      })
     },
     onSubmit() {
       this.$refs.upload.submit();

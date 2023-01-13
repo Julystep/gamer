@@ -27,10 +27,19 @@
   </el-carousel>
   <div class="split"></div>
   <el-row :gutter="20" style="margin-bottom: 60px">
-    <el-col :span="6" :offset="12"><h1 style="margin-top: 0px">年度平台统计</h1></el-col>
-    <el-col :span="6" >
+    <el-col :span="6" :offset="12"
+      ><h1 style="margin-top: 0px">年度平台统计</h1></el-col
+    >
+    <el-col :span="6">
       <slot>年份：</slot>
-      <el-select v-model="year" class="m-2" placeholder="选择年份" size="small" width="100%" @change="changeData">
+      <el-select
+        v-model="year"
+        class="m-2"
+        placeholder="选择年份"
+        size="small"
+        width="100%"
+        @change="changeData"
+      >
         <el-option
           v-for="item in years"
           :key="item.year"
@@ -41,49 +50,40 @@
     </el-col>
   </el-row>
   <el-row style="height: 1200px">
-    <el-col :span="12"
-      ><div
-        id="Nintendo"
-        class="main_container"
+    <el-col :span="12">
+      <game_vertical
+        id="Nitendo"
+        ref="nitendo"
         style="width: 100%; height: 600px"
-      ></div
-    ></el-col>
+      />
+    </el-col>
     <el-col :span="12"
-      ><div
-        id="PlayStation"
-        class="main_container"
+      ><game_vertical
+        id="Playstation"
+        ref="playstation"
         style="width: 100%; height: 600px"
-      ></div
-    ></el-col>
+    /></el-col>
     <el-col :span="12"
-      ><div
-        id="Xbox"
-        class="main_container"
-        style="width: 100%; height: 600px"
-      ></div
-    ></el-col>
+      ><game_vertical id="Xbox" ref="xbox" style="width: 100%; height: 600px"
+    /></el-col>
     <el-col :span="12"
-      ><div
-        id="PC"
-        class="main_container"
-        style="width: 100%; height: 600px"
-      ></div
-    ></el-col>
+      ><game_vertical id="PC" ref="pc" style="width: 100%; height: 600px"
+    /></el-col>
   </el-row>
   <el-row :gutter="20" style="margin-bottom: 60px">
-    <el-col :span="6" :offset="12"><h1 style="margin-top: 0px">游戏时长汇总</h1></el-col>
+    <el-col :span="6" :offset="12"
+      ><h1 style="margin-top: 0px">游戏时长汇总</h1></el-col
+    >
   </el-row>
   <el-row style="height: 600px">
     <el-col :span="24"
-      ><div
-        id="history"
-        class="main_container"
-        style="width: 100%; height: 100%"
-      ></div
-    ></el-col>
+      ><game_category id="history" ref="history" style="width: 100%; height: 100%"
+    /></el-col>
   </el-row>
 </template>
 <script>
+import game_vertical from "./charts/Vertical.vue";
+import game_category from "./charts/Category.vue";
 export default {
   name: "PictureShow",
   data() {
@@ -93,150 +93,61 @@ export default {
       year: 0,
     };
   },
+  components: {
+    game_vertical,
+    game_category,
+  },
   methods: {
-    initHistory(m) {
-      var chartDom = document.getElementById("history");
-      var myChart = this.$echarts.init(chartDom);
-      var option;
-      let source = [];
-      source.push(["product", "Nintendo", "PlayStation", "Xbox", "PC"]);
-      m.forEach((values, key) => {
-        let sourceItem = [];
-        sourceItem.push(key);
-        let nintendoNum = 0;
-        let playStationNum = 0;
-        let xboxNum = 0;
-        let pcNum = 0;
-        values.forEach((item) => {
-          if (item.platform === "Nintendo") {
-            nintendoNum += item.playedTime;
-          }
-          if (item.platform === "PlayStation") {
-            playStationNum += item.playedTime;
-          }
-          if (item.platform === "Xbox") {
-            xboxNum += item.playedTime;
-          }
-          if (item.platform === "PC") {
-            pcNum += item.playedTime;
-          }
-        });
-        sourceItem.push(nintendoNum);
-        sourceItem.push(playStationNum);
-        sourceItem.push(xboxNum);
-        sourceItem.push(pcNum);
-        source.push(sourceItem);
-      });
-      option = {
-        legend: {},
-        tooltip: {},
-        dataset: {
-          source: source,
-        },
-        xAxis: { type: "category" },
-        yAxis: {},
-        // Declare several bar series, each will be mapped
-        // to a column of dataset.source by default.
-        series: [
-          { type: "bar" },
-          { type: "bar" },
-          { type: "bar" },
-          { type: "bar" },
-        ],
-      };
-
-      option && myChart.setOption(option);
-    },
-    initPlatform(id, data) {
-      var chartDom = document.getElementById(id);
-      var myChart = this.$echarts.init(chartDom);
-      var option;
-      let result = [];
-      if (typeof data !== "undefined") {
-        data.forEach((item) => {
-          if (item.platform === id) {
-            let ob = {};
-            ob.value = item.playedTime;
-            ob.name = item.chineseName;
-            result.push(ob);
-          }
-        });
-      }
-      option = {
-        title: {
-          text: id,
-          subtext: "Game in year",
-          left: "center",
-        },
-        tooltip: {
-          trigger: "item",
-        },
-        legend: {
-          orient: "vertical",
-          left: "left",
-        },
-        series: [
-          {
-            name: "Access From",
-            type: "pie",
-            radius: "50%",
-            data: result,
-            emphasis: {
-              itemStyle: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: "rgba(0, 0, 0, 0.5)",
-              },
-            },
-          },
-        ],
-      };
-
-      option && myChart.setOption(option);
-    },
     changeData() {
-      this.pintPicture()
+      this.pintPicture();
     },
     pintPicture() {
       let m = new Map();
-    this.$axios.get("/query").then((res) => {
-      if (res.status === 200 && res.data.code === 0) {
-        let data = res.data.data;
-        data.forEach((item) => {
-          if (!m.has(item.year)) {
-            m.set(item.year, new Array());
+      let result = this.$gameRequest.queryGameData();
+      result
+        .then((res) => {
+          if (res.code === -1) {
+            this.$gameMessageBox.errorMessageBox(this, "查询失败");
+          } else {
+            let data = res.data;
+            data.forEach((item) => {
+              if (!m.has(item.year)) {
+                m.set(item.year, new Array());
+              }
+              m.get(item.year).push(item);
+              this.map = m;
+            });
+            this.initHistory(m);
+            this.$refs.nitendo.initPlatform("Nintendo", m.get(this.year));
+            this.$refs.playstation.initPlatform(
+              "PlayStation",
+              m.get(this.year)
+            );
+            this.$refs.xbox.initPlatform("Xbox", m.get(this.year));
+            this.$refs.pc.initPlatform("PC", m.get(this.year));
           }
-          m.get(item.year).push(item);
-          this.map = m;
+        })
+        .catch(error => {
+          console.log(error)
         });
-        this.initHistory(m);
-        this.initPlatform("Nintendo", m.get(this.year));
-        this.initPlatform("PlayStation", m.get(this.year));
-        this.initPlatform("Xbox", m.get(this.year));
-        this.initPlatform("PC", m.get(this.year));
-      } else {
-        this.$message({
-          message: "查询失败",
-          type: "error",
-        });
-      }
-    });
-    }
+    },
   },
   mounted() {
-    this.$axios.get("/query/years").then((res) => {
-      if (res.status === 200 && res.data.code === 0) {
-        this.years = res.data.data;
-        console.log(this.years[0])
-        this.year = this.years[0].year
-      } else {
-        this.$message({
-          message: "查询失败",
-          type: "error",
-        });
-      }
-    });
-    this.pintPicture()
+    let result = this.$gameRequest.queryYears();
+    result
+      .then((res) => {
+        if (res.code === -1) {
+          this.$gameMessageBox.errorMessageBox(this, "查询失败");
+        } else {
+          this.years = res.data;
+          this.year = this.years[0].year;
+        }
+      })
+      .catch(error => {
+        console.log(error)
+        this.$gameMessageBox.errorMessageBox(this, "查询失败");
+      });
+    this.pintPicture();
   },
 };
 </script>

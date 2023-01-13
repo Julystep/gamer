@@ -49,30 +49,26 @@ export default {
   },
   methods: {
     queryData() {
-      this.$axios
-        .post(
-          "/isLogin",
-          {},
-          {
-            headers: { token: this.$token.getToken() },
-          }
-        )
-        .then((res) => {
-          if (res.status !== 200 || res.data.code !== 0) {
-            this.$token.setToken("");
-          } 
-        });
-      this.$axios.get("/query/" + this.$route.query.id).then((res) => {
-        if (res.status === 200 && res.data.code === 0) {
-          this.data = res.data.data;
-          this.data.push(1);
-        } else {
-          this.$message({
-            message: "查询失败",
-            type: "error",
-          });
+      let result = this.$gameRequest.isLogin()
+      result.then(res => {
+        if (res === -1) {
+          this.$token.setToken("");
         }
-      });
+      }).catch(error => {
+        console.log(error)
+      })
+      let result2 = this.$gameRequest.queryGameData(this.$route.query.id)
+      result2.then(res => {
+        if (res === -1) {
+          this.$gameMessageBox.errorMessageBox(this, "查询失败")
+        } else {
+          this.data = res.data;
+          this.data.push(1);
+        }
+      }).catch(error => {
+        console.log(error)
+        this.$gameMessageBox.errorMessageBox(this, "查询失败")
+      })
     },
   },
   mounted() {

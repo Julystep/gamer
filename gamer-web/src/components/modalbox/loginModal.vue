@@ -47,51 +47,36 @@ export default {
   },
   methods: {
     submitForm(formName) {
-      console.log(formName);
-      this.$axios
-        .post(
-          "/login?username=" + formName.name + "&password=" + formName.password
-        )
-        .then((res) => {
-          if (res.status === 200 && res.data.code === 0) {
-            this.$token.setToken(res.data.data.tokenValue);
-            this.$message({
-              message: "登录成功",
-              type: "success",
-            });
-            this.subDialogTableVisible = false;
-            this.reload();
-          } else {
-            this.$message({
-              message: "登录失败",
-              type: "danger",
-            });
-          }
-        });
+      let result = this.$gameRequest.login(formName.name, formName.password)
+      result.then(res => {
+        if (res === -1) {
+          this.$gameMessageBox.errorMessageBox(this, "登录失败")
+        } else {
+          this.$token.setToken(res.data.tokenValue);
+          this.$gameMessageBox.successMessageBox(this, "登录成功")
+          this.subDialogTableVisible = false
+          this.reload()
+        }
+      }).catch(error => {
+        console.log(error)
+        this.$gameMessageBox.errorMessageBox(this, "登录失败")
+      })
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
     showDialog() {
-      this.$axios
-        .post(
-          "/isLogin",
-          {},
-          {
-            headers: { token: this.$token.getToken() },
-          }
-        )
-        .then((res) => {
-          if (res.status === 200 && res.data.code === 0) {
-            this.$message({
-              message: "已登录",
-              type: "success",
-            });
-          } else {
-            this.$token.setToken("");
-            this.subDialogTableVisible = true;
-          }
-        });
+      let result = this.$gameRequest.isLogin()
+      result.then(res => {
+        if (res === -1) {
+          this.$token.setToken("");
+          this.subDialogTableVisible = true;
+        } else {
+          this.$gameMessageBox.successMessageBox(this, "已登录")
+        }
+      }).catch(error => {
+        console.log(error)
+      })
     },
   },
 };

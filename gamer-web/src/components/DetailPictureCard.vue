@@ -56,37 +56,28 @@ export default {
     platform: String,
     gameName: String,
     data: Object,
-    yearId: Number
+    yearId: Number,
   },
   methods: {
     reverseShow(id) {
       this.$refs.game.showDialogWithDetail(id);
     },
     submit(form) {
-      this.$axios
-        .post("/update", form, {
-          headers: { token: this.$token.getToken() },
-        })
+      let result = this.$gameRequest.updateGameData(form, {});
+      result
         .then((res) => {
-          if (res.status === 200 && res.data.code === 0) {
-            this.$message({
-              message: "更新成功",
-              type: "success",
-            });
+          if (res.code === -1) {
+            this.$gameMessageBox.errorMessageBox(this, "更新失败")
+          } else if (res.code === 302) {
+            this.$gameMessageBox.errorMessageBox(this, "权限不足")
+            this.$token.setToken("");
           } else {
-            if (res.data.code === 302) {
-              this.$message({
-                message: "权限不足",
-                type: "error",
-              });
-              this.$token.setToken("");
-            } else {
-              this.$message({
-                message: "更新失败",
-                type: "error",
-              });
-            }
+            this.$gameMessageBox.successMessageBox(this, "更新成功")
           }
+        })
+        .catch((error) => {
+          console.log(error);
+          this.$gameMessageBox.errorMessageBox(this, "更新失败")
         });
       this.reload();
     },
@@ -97,50 +88,27 @@ export default {
         type: "warning",
       })
         .then(() => {
-          this.$axios
-            .post(
-              "/delete/" + id,
-              {},
-              {
-                headers: { token: this.$token.getToken() },
-              }
-            )
+          let result = this.$gameRequest.deleteGame((id));
+          result
             .then((res) => {
-              console.log(res);
-              if (res.status === 200 && res.data.code === 0) {
-                this.$message({
-                  message: "删除成功",
-                  type: "success",
-                });
-              
+              if (res.code === -1) {
+                this.$gameMessageBox.errorMessageBox(this, "删除失败")
+              } else if (res.code === 302) {
+                this.$gameMessageBox.errorMessageBox(this, "权限不足")
+                this.$token.setToken("");
               } else {
-                if (res.data.code === 302) {
-                  this.$message({
-                    message: "权限不足",
-                    type: "error",
-                  });
-                  this.$token.setToken("");
-                } else {
-                  this.$message({
-                    message: "更新失败",
-                    type: "error",
-                  });
-                }
-             
+                this.$gameMessageBox.successMessageBox(this, "删除成功")
+                this.reload();
               }
-            });
-            new Promise((resolve) => setTimeout(resolve, 500)).then(() => {
-              this.reload();
             })
-            
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
-        });
-    },
+            .catch((error) => {
+              console.log(error)
+              this.$gameMessageBox.errorMessageBox(this, "删除失败")
+            });
+          }).catch(() => {
+            this.$gameMessageBox.infoMessageBox(this, "取消删除")
+          })
+      },
     calPlatform(platform) {
       console.log(platform);
       if (platform === "Nintendo") {

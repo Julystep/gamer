@@ -20,7 +20,10 @@
             >
               <router-link
                 style="text-decoration: none"
-                :to="{ path: '/detail', query: { year: year.year, id: year.id} }"
+                :to="{
+                  path: '/detail',
+                  query: { year: year.year, id: year.id },
+                }"
                 >{{ year.year }}</router-link
               >
             </el-menu-item>
@@ -38,7 +41,7 @@
       </el-main>
     </el-container>
   </div>
-  <loginModal ref="login"/>
+  <loginModal ref="login" />
 </template>
 
 <script>
@@ -60,7 +63,7 @@ export default {
   },
   components: {
     UserFilled,
-    loginModal
+    loginModal,
   },
   data() {
     return {
@@ -77,19 +80,22 @@ export default {
     },
     login() {
       this.$refs.login.showDialog();
-    }
+    },
   },
   mounted() {
-    this.$axios.get("/query/years").then((res) => {
-      if (res.status === 200 && res.data.code === 0) {
-        this.years = res.data.data;
-      } else {
-        this.$message({
-          message: "查询失败",
-          type: "error",
-        });
-      }
-    });
+    let result = this.$gameRequest.queryYears();
+    result
+      .then((res) => {
+        if (res.code === -1) {
+          this.$gameMessageBox.errorMessageBox(this, "查询失败");
+        } else {
+          this.years = res.data;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        this.$gameMessageBox.errorMessageBox(this, "查询失败");
+      });
   },
 };
 </script>
