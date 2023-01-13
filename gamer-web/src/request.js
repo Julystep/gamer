@@ -26,6 +26,10 @@ export default {
     login(username, password) {
         let aimUrl = loginUrl + "?username=" + username + "&password=" + password
         return http.httpPost(aimUrl)
+    },
+    queryGameDetail(id) {
+        let aimUrl = detailUrl + "/" + id
+        return http.httpPost(aimUrl)
     }
 }
 
@@ -36,3 +40,4 @@ let deleteGameUrl = '/delete'
 let saveGameUrl = '/save'
 let isLoginUrl = '/isLogin'
 let loginUrl = '/login'
+let detailUrl = '/detail/'
