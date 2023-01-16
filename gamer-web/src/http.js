@@ -17,8 +17,9 @@ export default {
         // let resultBody = new Map()
         let resultBody = {}
         headersDeal(headers)
+    
         await http
-        .get(url, params, headers)
+        .get(url, params, {headers: headers})
         .then(res => {
             if (res.status === 200 && res.data.code === 0) {
                 // resultBody.set('code', 0)
@@ -37,8 +38,9 @@ export default {
     async httpPost(url, params = {}, headers = {}) {
         let resultBody = new Map()
         headersDeal(headers)
+        console.log(headers)
         await http
-        .post(url, params, headers)
+        .post(url, params, {headers: headers})
         .then(res => {
             if (res.status === 200 && res.data.code === 0) {
                 resultBody.code = 0

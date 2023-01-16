@@ -115,10 +115,10 @@ export default {
       this.form = {};
       let result = this.$gameRequest.queryGameDetail(id)
       result.then(res => {
-        if (res === -1) {
+        if (res.code === -1) {
           this.$gameMessageBox.errorMessageBox(this, "查询失败")
         } else {
-          this.form = res.data.data;
+          this.form = res.data;
           let picturePath = new Object();
           picturePath.name = this.form.gameName;
           picturePath.url = this.form.picturePath;

@@ -29,7 +29,7 @@ export default {
     },
     queryGameDetail(id) {
         let aimUrl = detailUrl + "/" + id
-        return http.httpPost(aimUrl)
+        return http.httpGet(aimUrl)
     }
 }
 

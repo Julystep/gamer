@@ -30,9 +30,6 @@ public class GameServiceImpl implements GameService {
     @Value("${picture.path}")
     private String picturePath;
 
-    @Value("${static.path}")
-    private String staticPath;
-
     GameRepository gameRepository;
     YearRepository yearRepository;
 
@@ -75,7 +72,7 @@ public class GameServiceImpl implements GameService {
             if (!currentFile.delete()) log.warn("历史文件{}未成功删除", gameInDb.getDiskPath());
         }
         String absoluteDiskFilePath = saveDiskFile(game, file);
-        String httpPath = MessageFormat.format("{0}/{1}/{2}", staticPath, game.getGameName(), file.getOriginalFilename());
+        String httpPath = MessageFormat.format("{0}/{1}/{2}", picturePath, game.getGameName(), file.getOriginalFilename());
         game.setCreateTime(new Date());
         game.setPicturePath(httpPath);
         game.setDiskPath(absoluteDiskFilePath);

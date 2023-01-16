@@ -59,7 +59,7 @@ export default {
       })
       let result2 = this.$gameRequest.queryGameData(this.$route.query.id)
       result2.then(res => {
-        if (res === -1) {
+        if (res.code === -1) {
           this.$gameMessageBox.errorMessageBox(this, "查询失败")
         } else {
           this.data = res.data;

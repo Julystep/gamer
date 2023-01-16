@@ -46,7 +46,6 @@ sa-token:
   is-print: false
 
 picture.path: ./picture
-static.path: http://127.0.0.1:8083/picture
 
 default_username: admin
 default_password: 123456

@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import Detail from './components/Detail.vue'
-import Picture from './components/PictureShow.vue'
+import gamepreview from './components/gamepreview/GamePreview.vue'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import { createRouter, createMemoryHistory } from 'vue-router'
@@ -12,7 +12,7 @@ import * as echarts from "echarts"
 
 const routes = [
     {path: '/detail', component: Detail, name: 'Detail'},
-    {path: '/', component: Picture}
+    {path: '/', component: gamepreview}
 ]
 
 const router = createRouter({

@@ -49,9 +49,10 @@ export default {
     submitForm(formName) {
       let result = this.$gameRequest.login(formName.name, formName.password)
       result.then(res => {
-        if (res === -1) {
+        if (res.code === -1) {
           this.$gameMessageBox.errorMessageBox(this, "登录失败")
         } else {
+          console.log(res.data.tokenValue)
           this.$token.setToken(res.data.tokenValue);
           this.$gameMessageBox.successMessageBox(this, "登录成功")
           this.subDialogTableVisible = false
@@ -68,7 +69,7 @@ export default {
     showDialog() {
       let result = this.$gameRequest.isLogin()
       result.then(res => {
-        if (res === -1) {
+        if (res.code === -1) {
           this.$token.setToken("");
           this.subDialogTableVisible = true;
         } else {
